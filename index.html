@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>WP Integrator V5.14 candidate — Justifit / Qredible</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-site="FR" data-theme="light">
+  <main class="app-shell">
+    <header class="app-header">
+      <div>
+        <div class="header-kicker"><div class="eyebrow">OUTIL LOCAL · WORDPRESS</div><span class="active-site-badge" id="activeSiteBadge">🇫🇷 MODE FR</span></div>
+        <h1>WP Integrator <span class="version">V5.14 candidate</span></h1>
+        <p class="subtitle">Formatage éditorial, maillage, aperçu/correction visuelle et contrôle avant publication.</p>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" title="Passer en mode sombre"><span class="theme-icon" aria-hidden="true">🌙</span><span id="themeToggleText">Mode sombre</span></button>
+      </div>
+    </header>
+
+    <section class="site-panel">
+      <div class="site-choice-row">
+        <label for="siteSelect" class="site-choice-label">Site de publication <span>— Vérifie le pays avant de formater</span></label>
+        <select id="siteSelect" class="site-select" aria-label="Site de publication actif">
+          <option value="FR">🇫🇷 Justifit France (FR)</option>
+          <option value="BE">🇧🇪 Justifit Belgique (BE)</option>
+          <option value="UK">🇬🇧 Qredible Royaume-Uni (UK)</option>
+        </select>
+        <strong id="siteSafetyLabel" class="site-safety-label">Maillage : France</strong>
+      </div>
+      <div class="site-context">
+        <span class="connection-pill checking" id="connectionStatus">⏳ Connexion…</span>
+      </div>
+    </section>
+
+    <section class="panel input-panel">
+      <div class="section-title-row">
+        <div>
+          <div class="eyebrow">IMPORT DE L'ARTICLE</div>
+          <h2>Colle ton contenu WordPress ou un extrait à formater</h2>
+          <p>HTML WordPress, texte brut (ex. « Bon à savoir : »), ou extrait éditorial. Le HTML WordPress reste le format de référence pour les articles complets.</p>
+        </div>
+        <div class="input-controls"><button class="ghost-btn" id="toggleInputBtn" type="button" aria-expanded="true" aria-controls="inputBody">Réduire le collage</button><button class="ghost-btn" id="clearBtn">Effacer</button></div>
+      </div>
+
+      <div id="inputBody">
+      <textarea id="inputHtml" class="code-area input-area" spellcheck="false" placeholder="Colle le HTML WordPress ou un extrait : Bon à savoir : puis ton texte, même après plusieurs lignes vides..."></textarea>
+
+      <div class="actions-row">
+        <button class="primary-btn" id="processBtn">Analyser et formater</button>
+        <span class="hint">Le HTML final reste compatible WordPress. L’aperçu en ligne n’ajoute aucune balise au code final.</span>
+      </div>
+
+      </div>
+      <div class="analysis-progress" id="analysisProgress" hidden aria-live="polite" aria-atomic="true">
+        <div class="analysis-progress-head">
+          <div><strong id="analysisProgressTitle">Analyse en cours...</strong><span id="analysisProgressStep">Preparation du contenu</span></div>
+          <strong class="analysis-progress-percent" id="analysisProgressPercent">Étape 1 / 13</strong>
+        </div>
+        <div class="analysis-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="analysisProgressBar"><div class="analysis-progress-fill" id="analysisProgressFill"></div></div>
+      </div>
+    </section>
+
+    <section class="panel results-panel" id="resultsPanel" hidden>
+      <div class="result-actions-bar">
+        <div class="result-actions">
+          <button class="ghost-btn" id="downloadHtmlBtn">Télécharger .html</button>
+          <button class="primary-btn small" id="copyBtn">Copier le HTML</button>
+        </div>
+      </div>
+      <div class="result-alert-banner" id="resultAlertBanner" hidden><span id="resultAlertText"></span><button id="openAlertsBtn">Voir les alertes</button></div>
+
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="preview">Aperçu WordPress & correction</button>
+        <button class="tab" data-tab="online">Aperçu en ligne</button>
+        <button class="tab" data-tab="report">Alertes & rapport <span class="tab-count" id="alertTabCount">0</span></button>
+        <button class="tab" data-tab="links">Maillage <span class="tab-count" id="linkTabCount">0</span></button>
+        <button class="tab uk-tab" data-tab="categories">Catégories UK</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-preview">
+        <div class="visual-toolbar" id="visualToolbar">
+          <div class="editor-mode-row"><span class="hint">Éditeur de l’article</span><div class="editor-mode-switch" role="group" aria-label="Mode de modification"><button type="button" id="modeVisualBtn" class="active" aria-pressed="true">Visuel</button><button type="button" id="modeCodeBtn" aria-pressed="false">Code</button></div></div>
+          <div class="toolbar-help" id="toolbarHelp">Clique sur un élément dans l’aperçu, puis choisis son format.</div>
+          <div class="toolbar-buttons">
+            <button data-format="h2">H2</button>
+            <button data-format="h3">H3</button>
+            <button data-format="h4">H4</button>
+            <button data-format="p">Paragraphe</button>
+            <button data-format="strong">Gras</button>
+            <button data-format="blockquote">Encadré / Blockquote</button>
+            <button data-format="cta">CTA Bon à savoir</button>
+            <button data-format="why">Rôle avocat</button>
+            <button data-format="undo" id="undoEditorBtn">↶ Annuler</button>
+            <button data-format="redo" id="redoEditorBtn">↷ Rétablir</button>
+          </div>
+        </div>
+        <div class="editor-code-layout">
+          <div class="preview-stage" id="visualStage"><article id="visualEditor" class="article-canvas" contenteditable="true" spellcheck="true"></article></div>
+          <aside class="inline-html-panel" id="codeStage" hidden><div class="inline-html-head"><strong>Code HTML éditable</strong><button class="primary-btn small copy-output-btn" type="button">Copier le HTML</button></div><textarea id="inlineHtmlCode" class="inline-html-code" spellcheck="false" aria-label="Code HTML éditable synchronisé"></textarea></aside>
+        </div>
+        <div class="bottom-copy-row"><span class="hint">Retouches terminées ?</span><button class="primary-btn copy-output-btn" type="button">Copier le HTML</button></div>
+
+      </div>
+
+      <div class="tab-panel" id="tab-online">
+        <div class="online-preview-head">
+          <div><strong>Aperçu de l’article publié</strong><p>Simulation visuelle uniquement : le HTML WordPress final n’est jamais modifié pour produire ce rendu.</p></div>
+          <span class="preview-simulation-badge">SIMULATION EN LIGNE</span>
+        </div>
+        <div class="preview-stage online-stage"><article id="onlinePreview" class="article-canvas online-article"></article></div>
+        <p class="preview-note">Les shortcodes <code>[ctabtn]</code>, <code>[article_sources]</code> et <code>[lwptoc]</code> sont rendus visuellement ici seulement. Ils restent inchangés dans le HTML final.</p>
+      </div>
+
+      <div class="tab-panel" id="tab-html" hidden aria-hidden="true" style="display:none">
+        <div class="html-tools">
+          <span class="hint">Modification manuelle possible ici aussi.</span>
+          <button class="secondary-btn" id="refreshPreviewBtn">Rafraîchir l’aperçu depuis le HTML</button>
+        </div>
+        <textarea id="outputHtml" class="code-area output-area" spellcheck="false"></textarea>
+      </div>
+
+      <div class="tab-panel" id="tab-report">
+        <div id="reportOutput" class="report-box"></div>
+      </div>
+      <div class="tab-panel" id="tab-links">
+        <div id="linksOutput" class="report-box"></div>
+      </div>
+      <div class="tab-panel" id="tab-categories">
+        <div id="categoriesOutput" class="report-box"></div>
+      </div>
+    </section>
+
+    <section class="panel base-panel compact-base-panel">
+      <details id="quickBaseDetails">
+        <summary>
+          <span><strong>Gestion de la base d’articles (facultatif)</strong></span>
+          <span class="base-active-site" id="quickBaseSiteLabel">Base FR</span>
+        </summary>
+        <div class="details-content quick-base-content">
+          <p class="quick-base-intro">Ajoute ici un nouvel article publié. Le site sélectionné en haut détermine automatiquement la bonne base, sans autre choix à faire.</p>
+          <div class="quick-base-grid">
+            <label class="field">
+              <span>Titre de l’article</span>
+              <input id="quickBaseTitle" type="text" placeholder="Ex. Garantie des vices cachés : procédure et délai">
+            </label>
+            <label class="field">
+              <span>URL de l’article</span>
+              <input id="quickBaseUrl" type="url" placeholder="https://www.justifit.fr/...">
+            </label>
+          </div>
+          <div class="actions-row quick-base-actions">
+            <button class="secondary-btn" id="quickBaseAddBtn">Mettre à jour la liste</button>
+            <span id="quickBaseMessage" class="hint"></span>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <div id="floatingActions" class="floating-actions" hidden><button type="button" id="floatingEditorBtn" class="secondary-btn">Éditeur</button><button type="button" class="primary-btn copy-output-btn">Copier le HTML</button></div>
+    <footer>Copyright RoberiX 2026</footer>
+  </main>
+
+  <script src="data/articles-data.js"></script>
+  <script src="data/cta-pages.js"></script>
+  <script src="js/base-manager.js"></script>
+  <script src="js/categories.js"></script>
+  <script src="js/internal-links.js"></script>
+  <script src="js/formatter.js"></script>
+  <script src="js/validator.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
