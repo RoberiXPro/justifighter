@@ -5,7 +5,7 @@
   const $=id=>document.getElementById(id);
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const clean=s=>String(s||'').replace(/\u00a0/g,' ').replace(/\s+/g,' ').trim().replace(/\s*:\s*$/,'');
-  const SITE_META={FR:{flag:'🇫🇷',label:'MODE FR'},BE:{flag:'🇧🇪',label:'MODE BE'},UK:{flag:'🇬🇧',label:'MODE UK'}};
+  const SITE_META={FR:{flag:'',label:'MODE FR'},BE:{flag:'',label:'MODE BE'},UK:{flag:'',label:'MODE UK'}};
 
   const THEME_KEY='wpIntegratorTheme';
   function applyTheme(theme){
